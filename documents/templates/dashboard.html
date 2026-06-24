@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard | Meeting Docs{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div>
+        <div class="page-kicker">Quản trị hệ thống</div>
+        <h1 class="h3 mb-1">Admin Dashboard</h1>
+        <div class="text-muted-strong">Duyệt, xem và xóa tài liệu trong hệ thống.</div>
+    </div>
+</section>
+
+<section class="row g-3 mb-4">
+    <div class="col-6 col-lg-3">
+        <div class="stat-card">
+            <div class="stat-label">Tổng tài liệu</div>
+            <div class="stat-value">{{ total_documents }}</div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="stat-card">
+            <div class="stat-label">Chờ duyệt</div>
+            <div class="stat-value text-warning">{{ pending_documents }}</div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="stat-card">
+            <div class="stat-label">Đã duyệt</div>
+            <div class="stat-value text-success">{{ approved_documents }}</div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="stat-card">
+            <div class="stat-label">Người dùng</div>
+            <div class="stat-value">{{ total_users }}</div>
+        </div>
+    </div>
+</section>
+
+<section class="surface mb-4">
+    <div class="surface-header d-flex align-items-center justify-content-between">
+        <h2 class="h5 mb-0">Tài liệu chờ duyệt</h2>
+        <span class="badge text-bg-warning">{{ pending_documents }}</span>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>Tên tài liệu</th>
+                    <th>Người tải</th>
+                    <th>Ngày tải</th>
+                    <th class="text-end">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for doc in pending_docs %}
+                    <tr>
+                        <td class="fw-semibold">{{ doc.title }}</td>
+                        <td>{{ doc.uploaded_by.username }}</td>
+                        <td>{{ doc.uploaded_at|date:"d/m/Y H:i" }}</td>
+                        <td>
+                            <div class="d-flex justify-content-end gap-2">
+                                <a href="/documents/{{ doc.id }}/"
+                                   class="btn btn-outline-primary btn-sm">
+                                    <i data-lucide="eye" width="16" height="16"></i>
+                                    Xem
+                                </a>
+                                <a href="/approve/{{ doc.id }}/"
+                                   class="btn btn-success btn-sm">
+                                    <i data-lucide="check" width="16" height="16"></i>
+                                    Duyệt
+                                </a>
+                                <a href="/admin-delete/{{ doc.id }}/"
+                                   class="btn btn-outline-danger btn-sm"
+                                   onclick="return confirm('Xóa tài liệu này?')">
+                                    <i data-lucide="trash-2" width="16" height="16"></i>
+                                    Xóa
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="4">
+                            <div class="empty-state">
+                                <i data-lucide="check-circle-2" width="36" height="36"></i>
+                                <div class="mt-2">Không có tài liệu chờ duyệt.</div>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<section class="surface">
+    <div class="surface-header d-flex align-items-center justify-content-between">
+        <h2 class="h5 mb-0">Tài liệu đã duyệt</h2>
+        <span class="badge text-bg-success">{{ approved_documents }}</span>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>Tên tài liệu</th>
+                    <th>Người tải</th>
+                    <th>Ngày tải</th>
+                    <th class="text-end">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for doc in approved_docs %}
+                    <tr>
+                        <td class="fw-semibold">{{ doc.title }}</td>
+                        <td>{{ doc.uploaded_by.username }}</td>
+                        <td>{{ doc.uploaded_at|date:"d/m/Y H:i" }}</td>
+                        <td>
+                            <div class="d-flex justify-content-end gap-2">
+                                <a href="/documents/{{ doc.id }}/"
+                                   class="btn btn-outline-primary btn-sm">
+                                    <i data-lucide="eye" width="16" height="16"></i>
+                                    Xem
+                                </a>
+                                <a href="/admin-delete/{{ doc.id }}/"
+                                   class="btn btn-outline-danger btn-sm"
+                                   onclick="return confirm('Xóa tài liệu này?')">
+                                    <i data-lucide="trash-2" width="16" height="16"></i>
+                                    Xóa
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="4">
+                            <div class="empty-state">
+                                <i data-lucide="folder-open" width="36" height="36"></i>
+                                <div class="mt-2">Chưa có tài liệu nào được duyệt.</div>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

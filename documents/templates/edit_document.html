@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Sửa tài liệu | Meeting Docs{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div>
+        <div class="page-kicker">Cập nhật tài liệu</div>
+        <h1 class="h3 mb-1">Sửa tên tài liệu</h1>
+        <div class="text-muted-strong">Sau khi sửa, tài liệu sẽ cần admin duyệt lại.</div>
+    </div>
+    <a href="/my-documents/" class="btn btn-outline-secondary">
+        <i data-lucide="arrow-left" width="18" height="18"></i>
+        Quay lại
+    </a>
+</section>
+
+<section class="surface auth-card">
+    <div class="surface-body">
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+
+            <button class="btn btn-primary w-100" type="submit">
+                <i data-lucide="save" width="18" height="18"></i>
+                Lưu thay đổi
+            </button>
+        </form>
+    </div>
+</section>
+{% endblock %}
