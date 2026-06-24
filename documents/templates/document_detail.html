@@ -10,132 +10,321 @@
         <div class="text-muted-strong">Thông tin tài liệu và trạng thái duyệt.</div>
     </div>
 
-    <a href="/"
-    class="btn btn-outline-secondary">
-
-        <i data-lucide="arrow-left"
-        width="18"
-        height="18"></i>
-
+    <a href="/" class="btn btn-outline-secondary">
+        <i data-lucide="arrow-left" width="18" height="18"></i>
         Quay lại
-
     </a>
 </section>
+
 
 <section class="surface">
     <div class="surface-body">
         <div class="row g-4">
+
             <div class="col-lg-8">
+
                 <div class="mb-4">
                     <div class="page-kicker">Tên tài liệu</div>
                     <div class="fs-4 fw-semibold">{{ doc.title }}</div>
                 </div>
 
+
                 <div class="row g-3 mb-4">
+
                     <div class="col-md-6">
                         <div class="stat-card">
                             <div class="stat-label">Người tải lên</div>
-                            <div class="fw-semibold">{{ doc.uploaded_by.username }}</div>
+                            <div class="fw-semibold">
+                                {{ doc.uploaded_by.username }}
+                            </div>
                         </div>
                     </div>
+
 
                     <div class="col-md-6">
                         <div class="stat-card">
                             <div class="stat-label">Ngày tải lên</div>
-                            <div class="fw-semibold">{{ doc.uploaded_at|date:"d/m/Y H:i" }}</div>
+                            <div class="fw-semibold">
+                                {{ doc.uploaded_at|date:"d/m/Y H:i" }}
+                            </div>
                         </div>
                     </div>
+
 
                     <div class="col-md-6">
                         <div class="stat-card">
                             <div class="stat-label">Trạng thái</div>
+
                             {% if doc.approved %}
-                                <span class="badge text-bg-success">Đã duyệt</span>
+                                <span class="badge text-bg-success">
+                                    Đã duyệt
+                                </span>
                             {% else %}
-                                <span class="badge text-bg-warning">Chờ duyệt</span>
+                                <span class="badge text-bg-warning">
+                                    Chờ duyệt
+                                </span>
                             {% endif %}
+
                         </div>
                     </div>
+
 
                     <div class="col-md-6">
                         <div class="stat-card">
                             <div class="stat-label">Tên file</div>
-                            <div class="fw-semibold text-break">{{ doc.file_name }}</div>
+                            <div class="fw-semibold text-break">
+                                {{ doc.file_name }}
+                            </div>
                         </div>
                     </div>
+
                 </div>
+
+
 
                 <div class="surface">
+
                     <div class="surface-header d-flex align-items-center justify-content-between">
-                        <h2 class="h5 mb-0">Xem trước nội dung</h2>
-                        <span class="badge text-bg-light">{{ doc.file_name }}</span>
+                        <h2 class="h5 mb-0">
+                            Xem trước nội dung
+                        </h2>
+
+                        <span class="badge text-bg-light">
+                            {{ doc.file_name }}
+                        </span>
                     </div>
+
+
+
                     <div class="surface-body">
+
+
                         {% if preview.type == "docx" %}
+
                             {% if preview.text %}
-                                <div class="document-preview">{{ preview.text }}</div>
-                            {% else %}
-                                <div class="empty-state">
-                                    <i data-lucide="file-warning" width="36" height="36"></i>
-                                    <div class="mt-2">Không đọc được nội dung xem trước của file DOCX này.</div>
+
+                                <div class="document-preview">
+                                    {{ preview.text }}
                                 </div>
+
+                            {% else %}
+
+                                <div class="empty-state">
+
+                                    <i data-lucide="file-warning"
+                                       width="36"
+                                       height="36"></i>
+
+                                    <div class="mt-2">
+                                        Không đọc được nội dung xem trước của file DOCX này.
+                                    </div>
+
+                                </div>
+
                             {% endif %}
+
+
+
+                        {% elif preview.type == "xlsx" %}
+
+
+                            <div class="table-responsive">
+
+                                <table class="table table-bordered">
+
+                                    <tbody>
+
+                                        {% for row in preview.rows %}
+
+                                            <tr>
+
+                                                {% for cell in row %}
+
+                                                    <td>
+                                                        {{ cell }}
+                                                    </td>
+
+                                                {% endfor %}
+
+                                            </tr>
+
+                                        {% endfor %}
+
+                                    </tbody>
+
+                                </table>
+
+                            </div>
+
+
+
+
                         {% elif preview.type == "pdf" %}
-                            <iframe src="{{ doc.file.url }}" class="document-frame"></iframe>
-                        {% elif preview.type == "image" %}
-                            <div class="text-center">
-                                <img src="{{ doc.file.url }}" class="image-preview" alt="{{ doc.title }}">
-                            </div>
-                        {% else %}
+
+
                             <div class="empty-state">
-                                <i data-lucide="file-question" width="36" height="36"></i>
-                                <div class="mt-2">Định dạng này chưa hỗ trợ xem trước trên web.</div>
-                                <div class="mt-1">Bạn vẫn có thể tải file xuống để mở bằng ứng dụng phù hợp.</div>
+
+                                <i data-lucide="file-text"
+                                   width="36"
+                                   height="36"></i>
+
+                                <div class="mt-2">
+                                    File PDF không hỗ trợ xem trước.
+                                </div>
+
+                                <div class="mt-1">
+                                    Bạn có thể mở file hoặc tải xuống để xem.
+                                </div>
+
                             </div>
+
+
+
+
+                        {% elif preview.type == "image" %}
+
+
+                            <div class="text-center">
+
+                                <img src="{{ doc.file.url }}"
+                                     class="image-preview"
+                                     alt="{{ doc.title }}">
+
+                            </div>
+
+
+
+
+                        {% else %}
+
+
+                            <div class="empty-state">
+
+                                <i data-lucide="file-question"
+                                   width="36"
+                                   height="36"></i>
+
+                                <div class="mt-2">
+                                    Định dạng này chưa hỗ trợ xem trước trên web.
+                                </div>
+
+                                <div class="mt-1">
+                                    Bạn vẫn có thể tải file xuống để mở bằng ứng dụng phù hợp.
+                                </div>
+
+                            </div>
+
+
                         {% endif %}
+
+
+
                     </div>
+
                 </div>
+
+
             </div>
 
+
+
+
+
             <div class="col-lg-4">
+
                 <div class="surface h-100">
+
                     <div class="surface-header">
-                        <h2 class="h5 mb-0">Thao tác</h2>
+
+                        <h2 class="h5 mb-0">
+                            Thao tác
+                        </h2>
+
                     </div>
+
+
                     <div class="surface-body d-grid gap-2">
+
+
                         {% if preview.type == "pdf" or preview.type == "image" %}
+
                             <a href="{{ doc.file.url }}"
                                target="_blank"
                                class="btn btn-outline-primary">
-                                <i data-lucide="external-link" width="18" height="18"></i>
+
+                                <i data-lucide="external-link"
+                                   width="18"
+                                   height="18"></i>
+
                                 Mở file
+
                             </a>
+
                         {% endif %}
+
+
 
                         <a href="{{ doc.file.url }}"
                            download
                            class="btn btn-success">
-                            <i data-lucide="download" width="18" height="18"></i>
+
+                            <i data-lucide="download"
+                               width="18"
+                               height="18"></i>
+
                             Tải xuống
+
                         </a>
 
+
+
+
                         {% if user.is_authenticated and doc.uploaded_by == user %}
-                            <a href="/edit/{{ doc.id }}/" class="btn btn-outline-warning">
-                                <i data-lucide="pencil" width="18" height="18"></i>
+
+                            <a href="/edit/{{ doc.id }}/"
+                               class="btn btn-outline-warning">
+
+                                <i data-lucide="pencil"
+                                   width="18"
+                                   height="18"></i>
+
                                 Sửa tài liệu
+
                             </a>
+
                         {% endif %}
 
+
+
+
+
                         {% if user.is_superuser and not doc.approved %}
-                            <a href="/approve/{{ doc.id }}/" class="btn btn-primary">
-                                <i data-lucide="check" width="18" height="18"></i>
+
+                            <a href="/approve/{{ doc.id }}/"
+                               class="btn btn-primary">
+
+                                <i data-lucide="check"
+                                   width="18"
+                                   height="18"></i>
+
                                 Duyệt tài liệu
+
                             </a>
+
                         {% endif %}
+
+
+
                     </div>
+
                 </div>
+
             </div>
+
+
         </div>
     </div>
 </section>
+
+
 {% endblock %}

@@ -11,6 +11,7 @@ from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 
+from openpyxl import load_workbook
 from .forms import EditDocumentForm, RegisterForm, UploadForm
 from .models import Document
 
@@ -49,6 +50,20 @@ def extract_docx_text(document):
 
     return "\n".join(paragraphs)
 
+def extract_xlsx_data(document):
+    try:
+        workbook = load_workbook(document.file.path, data_only=True)
+        sheet = workbook.active
+
+        rows = []
+
+        for row in sheet.iter_rows(max_row=50, values_only=True):
+            rows.append(row)
+
+        return rows
+
+    except Exception:
+        return []
 
 def get_document_preview(document):
     file_extension = get_file_extension(document)
@@ -59,6 +74,12 @@ def get_document_preview(document):
             "text": extract_docx_text(document),
         }
 
+    if file_extension == ".xlsx":
+        return {
+            "type": "xlsx",
+            "rows": extract_xlsx_data(document),
+        }
+
     if file_extension == ".pdf":
         return {"type": "pdf"}
 
@@ -66,8 +87,6 @@ def get_document_preview(document):
         return {"type": "image"}
 
     return {"type": "unsupported"}
-
-
 def home(request):
     docs = Document.objects.filter(approved=True).order_by("-uploaded_at")
     q = request.GET.get("q")
